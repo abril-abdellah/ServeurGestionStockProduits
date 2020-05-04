@@ -14,30 +14,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Produit;
-import com.example.service.ProduitMockService;
+import com.example.service.ProduitService;
 
 @RestController
 @CrossOrigin
 @RequestMapping
 public class ProduitController {
+	
+	/*
 	@Autowired
 	ProduitMockService produitMockService;
+	*/
+	
+	@Autowired
+	ProduitService produitService;
 	
 	@GetMapping("/produits")
 	public List<Produit> getProduits() {
-		return produitMockService.getProduits();
+		return produitService.getProduits();
 	}
 	
 	@PostMapping("/produits")
 	public void addProduit(@RequestBody Produit produit) {
-		produitMockService.addProduit(produit);
+		produitService.addProduit(produit);
 	}
 	@PutMapping("/produits")
 	public void updateProduit(@RequestBody Produit produit) {
-		produitMockService.updateProduit(produit);
+		produitService.updateProduit(produit);
 	}
-	@DeleteMapping(path = "/produits/{ref}")
-	public void deleteProduit(@PathVariable String ref) {
-		produitMockService.deleteProduit(ref);
+	@DeleteMapping(path = "/produits/{id}")
+	public void deleteProduit(@PathVariable Long id) {
+		produitService.deleteProduit(id);
 	}
 }

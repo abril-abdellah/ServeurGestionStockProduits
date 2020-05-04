@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.entity.Produit;
 
-@Service
+//@Service
 public class ProduitMockService implements IProduitService{
 	
 	
@@ -43,8 +43,8 @@ public class ProduitMockService implements IProduitService{
 	}
 
 	@Override
-	public void deleteProduit(String ref) {
-		produits.removeIf(produit-> produit.getRef().equals(ref));
+	public void deleteProduit(Long id) {
+		produits.removeIf(produit-> produit.getRef().equals(id));
 	}
 	
 }
