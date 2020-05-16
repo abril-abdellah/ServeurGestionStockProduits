@@ -9,7 +9,6 @@ import com.example.entity.Produit;
 import com.example.repository.ProduitRepository;
 
 @Service
-//@Primary
 public class ProduitService implements IProduitService{
 	
 	@Autowired

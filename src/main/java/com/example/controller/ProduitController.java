@@ -3,6 +3,7 @@ package com.example.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,33 +17,28 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.entity.Produit;
 import com.example.service.ProduitService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@CrossOrigin
-@RequestMapping
 public class ProduitController {
-	
-	/*
-	@Autowired
-	ProduitMockService produitMockService;
-	*/
 	
 	@Autowired
 	ProduitService produitService;
 	
-	@GetMapping("/produits")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@GetMapping("/api/produits")
 	public List<Produit> getProduits() {
 		return produitService.getProduits();
 	}
 	
-	@PostMapping("/produits")
+	@PostMapping("/api/produits")
 	public void addProduit(@RequestBody Produit produit) {
 		produitService.addProduit(produit);
 	}
-	@PutMapping("/produits")
+	@PutMapping("/api/produits")
 	public void updateProduit(@RequestBody Produit produit) {
 		produitService.updateProduit(produit);
 	}
-	@DeleteMapping(path = "/produits/{id}")
+	@DeleteMapping(path = "/api/produits/{id}")
 	public void deleteProduit(@PathVariable Long id) {
 		produitService.deleteProduit(id);
 	}
