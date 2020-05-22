@@ -24,7 +24,6 @@ public class ProduitController {
 	@Autowired
 	ProduitService produitService;
 	
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/api/produits")
 	public List<Produit> getProduits() {
 		return produitService.getProduits();

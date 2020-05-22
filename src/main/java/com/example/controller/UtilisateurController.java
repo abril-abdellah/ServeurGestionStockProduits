@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import com.example.repository.UserRepository;
 import com.example.service.UserDetailsImpl;
 import com.example.service.UserService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class UtilisateurController {
 	
@@ -45,7 +47,7 @@ public class UtilisateurController {
 	UserService userService;
 	
 	@PostMapping("/api/sinscrire")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody EnregistrementUtilisateurRequest signUpRequest) {
+	public ResponseEntity<?> registerUser(@RequestBody EnregistrementUtilisateurRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
@@ -72,9 +74,9 @@ public class UtilisateurController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/api/utilisateur")
-	public ResponseEntity<?> modifierUser(@Valid @RequestBody EnregistrementUtilisateurRequest userToUpdate) throws Exception {
+	public ResponseEntity<?> modifierUser(@RequestBody EnregistrementUtilisateurRequest userToUpdate) throws Exception {
 		if(!userRepository.existsByUsername(userToUpdate.getUsername())){
-			return ResponseEntity.badRequest().body("This user doesn't exist");
+			return ResponseEntity.badRequest().body("This user doesn't exist in db");
 		}
 		User user = new User();
 		user.setId(userRepository.findByUsername(userToUpdate.getUsername())
@@ -90,22 +92,31 @@ public class UtilisateurController {
 		Set<String> reqRoles = userToUpdate.getRole();
 		Set<Role> roles = new HashSet<>();
 		if(reqRoles == null || reqRoles.isEmpty()) {
-			Role role = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(()->new Exception("role not found!"));
+			Role role = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(()->new Exception("role not found in db!"));
 			roles.add(role);
 		}
 		else {
 			reqRoles.forEach(r->{
 				switch (r) {
 				case "admin":
-					Role roleA = new Role(ERole.ROLE_ADMIN);
-					roles.add(roleA);
+					try {
+						Role roleA = roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(()->new Exception("role not found in db!"));
+						roles.add(roleA);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
 					break;
 				default:
-					Role roleU = new Role(ERole.ROLE_USER);
+					try {
+						Role roleU = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(()->new Exception("role not found in db!"));
 					roles.add(roleU);
+					} catch (Exception e2) {
+					}		
 				}
 			});
 		}
+		user.setRoles(roles);
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
 	}
@@ -117,7 +128,7 @@ public class UtilisateurController {
 	}
 		
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/api/utilisateur")
+	@GetMapping("/api/utilisateurs")
 	public List<User> getAllUsers(){
 		return userService.getAllUsers();
 	}

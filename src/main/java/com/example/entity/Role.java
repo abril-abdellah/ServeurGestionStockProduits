@@ -1,15 +1,20 @@
 package com.example.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +22,15 @@ public class Role {
 
 	@Enumerated(EnumType.STRING)
 	private ERole name;
-
+	
+	@ManyToMany(
+		mappedBy = "roles",
+		cascade = {
+		        CascadeType.PERSIST, 
+		        CascadeType.MERGE
+		    })
+	private Set<User> users = new HashSet<>();
+	
 	public Role() {
 
 	}
