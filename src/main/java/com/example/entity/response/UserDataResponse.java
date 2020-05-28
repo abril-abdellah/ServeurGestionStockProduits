@@ -1,11 +1,13 @@
-package com.example.entity.request;
+package com.example.entity.response;
 
 import java.util.Set;
 
-public class EnregistrementUtilisateurRequest {
-
-    private String username;
- 
+public class UserDataResponse {
+	
+	private Long id;
+	
+	private String username;
+	 
     private String email;
     
     private Set<String> roles;
@@ -15,6 +17,14 @@ public class EnregistrementUtilisateurRequest {
     private boolean active;
 
     
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public boolean isActive() {
 		return active;
 	}
@@ -54,4 +64,4 @@ public class EnregistrementUtilisateurRequest {
     public void setRoles(Set<String> roles) {
       this.roles = roles;
     }
-}
+}	

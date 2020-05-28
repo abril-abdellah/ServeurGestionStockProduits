@@ -42,7 +42,6 @@ public class AuthenticationController {
 	public ResponseEntity<?> seconnecter(@RequestBody AuthenticationRequest authReq){
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authReq.getUsername(), authReq.getPassword()));
-
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtil.generateJwtToken(authentication);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
@@ -55,7 +54,4 @@ public class AuthenticationController {
 				 userDetails.getEmail(), 
 				 roles));
 	}
-	
-	
-	
 }
